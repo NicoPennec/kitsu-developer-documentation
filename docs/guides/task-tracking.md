@@ -137,6 +137,33 @@ tied to a preview revision cannot be moved — the preview stays on the task
 that owns the revision.
 :::
 
+### Copying Client Comments to Artists
+
+Artists do not see the comments written by clients. Production managers can
+copy the last client comment of each task of a selection into a studio
+comment, so the artists get the feedback without anyone retyping it.
+
+```python
+gazu.task.copy_last_client_comments(
+    project, tasks, prefix="Client feedback:"
+)
+```
+
+For each task, the copied comment is the last one written by a client of the
+project: someone whose role on the project, or global role when the project
+sets none, is `client`. It is copied even when studio comments followed it.
+The new comment is posted by the caller with the current status of the task,
+so the status does not change, and the assignees are notified as for any
+comment. The optional prefix goes on its own line before the client text.
+Tasks without client comment, or out of the project, are skipped: the call
+returns the created comments only.
+
+::: tip
+The copy is reserved to the managers of the project. Each call copies again,
+so running it twice on a task posts the comment twice. Replies and
+attachments of the client comment are not copied.
+:::
+
 ## Reading User Workloads
 
 ### Getting the Todo List of the Logged-In User
