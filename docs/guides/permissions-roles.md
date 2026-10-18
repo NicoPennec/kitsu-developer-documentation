@@ -227,9 +227,10 @@ Rules to know:
 
 ## Preview accounts
 
-A production manager can create a read-only account for the production, to
-let a client browse it without using a seat. Routes, all restricted to the
-managers of the production and to admins:
+A production manager can create a read-only client account for the
+production, to check what a client sees before sharing a page. It is a
+verification tool, not a way to give clients free access. Routes, all
+restricted to the managers of the production and to admins:
 
 | Method | Route | Result |
 |---|---|---|
@@ -262,8 +263,9 @@ Rules to know:
 * A new account is blocked. `PUT` with `{"is_open": true}` opens it for one
   hour, and extends the window when it is already open. `{"is_open": false}`
   blocks it immediately. `PUT` returns 404 when the production has no account.
-* Blocking, reopening and regenerating the password end the existing
-  sessions of the account.
+* Blocking, reopening after a block or an expiry, and regenerating the
+  password end the existing sessions of the account. Extending an open
+  window keeps them.
 * The account is read-only: any write returns 403.
 * It does not count as a seat, is hidden from `GET /data/persons`, cannot be
   assigned to a task or mentioned. Its id still appears in the team of the
