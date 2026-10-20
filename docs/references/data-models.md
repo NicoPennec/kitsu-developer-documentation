@@ -455,6 +455,7 @@ A specific instance of an asset placed in a shot or scene.
 | `checksum` | int | |
 | `path` | string | |
 | `data` | dict | |
+| `validation_status` | string: `neutral`, `validated`, `rejected` | `neutral` |
 | `task_id` | string (UUID) | |
 | `entity_id` | string (UUID) | |
 | `person_id` | string (UUID) | |
@@ -477,6 +478,7 @@ A specific instance of an asset placed in a shot or scene.
 | `source` | string | |
 | `path` | string | |
 | `data` | dict | |
+| `quality` | string: `low`, `mid`, `high` | `null` |
 | `file_status_id` | string (UUID) | |
 | `entity_id` | string (UUID) | |
 | `asset_instance_id` | string (UUID) | |
