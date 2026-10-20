@@ -542,6 +542,9 @@ A specific instance of an asset placed in a shot or scene.
 | `expiration_date` | string (date) | |
 | `studio_id` | string (UUID) | |
 | `departments` | list of department IDs | |
+| `preview_project_id` | string (UUID), set only on a production preview account | |
+| `preview_opened_at` | string (datetime) | |
+| `preview_open_until` | string (datetime), end of the access window | |
 
 ### Department
 

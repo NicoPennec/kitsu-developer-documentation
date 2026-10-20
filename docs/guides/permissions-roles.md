@@ -225,6 +225,55 @@ Rules to know:
   `project_role` key (`None` means the global role applies). The update
   response returns the same value under a `role` key.
 
+## Preview accounts
+
+A production manager can create a read-only client account for the
+production, to check what a client sees before sharing a page. It is a
+verification tool, not a way to give clients free access. Routes, all
+restricted to the managers of the production and to admins:
+
+| Method | Route | Result |
+|---|---|---|
+| `GET` | `/data/projects/<project_id>/preview-account` | The account, or `null` when there is none (200) |
+| `POST` | `/data/projects/<project_id>/preview-account` | Creates the account, or regenerates its password (201) |
+| `PUT` | `/data/projects/<project_id>/preview-account` | Opens or blocks the account (200) |
+| `DELETE` | `/data/projects/<project_id>/preview-account` | Deletes the account (204, also when there is none) |
+
+```bash
+# Create (or regenerate the password)
+curl -X POST "http://api.example.com/data/projects/a24a6ea4-ce75-4665-a070-57453082c25/preview-account" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+
+# Open for one hour
+curl -X PUT "http://api.example.com/data/projects/a24a6ea4-ce75-4665-a070-57453082c25/preview-account" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"is_open": true}'
+```
+
+The account dict has the keys `id`, `email`, `full_name` and
+`preview_open_until` (UTC ISO date, or `null` when blocked). The POST
+response adds the clear `password`: it is returned only once.
+
+Rules to know:
+
+* Only available with local classic authentication. The routes return 400
+  otherwise. Read the `preview_accounts_enabled` key of `GET /config` to know
+  if the feature is available.
+* A new account is blocked. `PUT` with `{"is_open": true}` opens it for one
+  hour, and extends the window when it is already open. `{"is_open": false}`
+  blocks it immediately. `PUT` returns 404 when the production has no account.
+* Blocking, reopening after a block or an expiry, and regenerating the
+  password end the existing sessions of the account. Extending an open
+  window keeps them.
+* The account is read-only: any write returns 403.
+* It does not count as a seat, is hidden from `GET /data/persons`, cannot be
+  assigned to a task or mentioned. Its id still appears in the team of the
+  production.
+* It is deleted with its production.
+* On the preview account, `GET /auth/authenticated` returns a non-null
+  `preview_project_id`.
+
 ## Check a person's role
 
 ::: code-group
